@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/jessica-taylor/ai-nudging#readme",
   "devDependencies": {
+    "@types/node": "^22.15.29",
     "typescript": "^5.8.3"
   },
   "dependencies": {
