@@ -2,6 +2,8 @@
 import { OpenAI } from 'openai';
 
 import dotenv from 'dotenv';
+import fs from 'node:fs';
+
 
 dotenv.config();
 
@@ -172,6 +174,7 @@ async function runDebate(proposition: string, model: string) {
 
 
   return {
+    proposition,
     controlText,
     controlEval,
     proText,
@@ -184,9 +187,22 @@ async function runDebate(proposition: string, model: string) {
 }
 
 async function main() {
-  const proposition = "The pyramids of Egypt were not built in the circumstances conventional archaeologists believe them to have been built.";
+  for (let i = 1; i < propositionList.length; i++) {
+    const proposition = propositionList[i];
 
-  const res = runDebate(proposition, 'anthropic/claude-sonnet-4');
+    const fname = `./output/debate_result_sonnet_4_${i}.json`;
+
+    console.log(`RUNNING DEBATE for proposition ${i + 1}/${propositionList.length}: ${proposition}`);
+
+    const res = await runDebate(proposition, 'anthropic/claude-sonnet-4');
+
+    try {
+      fs.writeFileSync(fname, JSON.stringify(res));
+    } catch (err) {
+      console.error(err);
+    }
+
+  }
 }
 
 main().catch(console.error);
