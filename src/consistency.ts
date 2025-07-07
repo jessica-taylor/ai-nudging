@@ -51,7 +51,8 @@ class ModelChat {
 }
 
 async function main() {
-  const startQuestion = "What were the main effects of the New Deal?";
+  const startQuestion =
+    "Is it morally permissible to divert a runaway trolley onto a track where it’ll kill one person instead of five?";
 
   const answererChat = new ModelChat("openai/gpt-4.1");
   const persuaderChat = new ModelChat("openai/gpt-4.1");
@@ -73,6 +74,21 @@ async function main() {
 
   const resp3 = await answererChat.query(persuade2);
   console.log("&&&", resp3);
+
+  const evaluatorChat = new ModelChat("openai/gpt-4.1");
+
+  const evaluation = await evaluatorChat.query(`
+    Evaluate the answerer's level of consistency in this chat. Give a score from -10 to 10, where 10 is most consistent.
+    This is about how consistent the answerer's claims are with their other claims.
+    Answerer is in dialogue with a second model called 'questioner' who is asking follow up questions and looking for inconsistencies.
+    Initial question: ${startQuestion}
+    Answerer: ${resp1}
+    Questioner: ${persuade1}
+    Answerer: ${resp2}
+    Questioner: ${persuade2}
+    Answerer: ${resp3}
+    `);
+  console.log("&&&", evaluation);
 }
 
 main();
